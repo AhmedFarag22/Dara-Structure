@@ -1,0 +1,295 @@
+#include<iostream>
+#include<cassert>
+#include<queue>
+using namespace std;
+
+struct nodeType
+{
+	int info;
+	nodeType* left;
+	nodeType* right;
+};
+
+class binarySearchTreeType {
+private:
+	nodeType* root;
+	void deleteFromTree(nodeType*& p);
+	void inorder(nodeType* p);
+	void preorder(nodeType* p);
+	void postorder(nodeType* p);
+	void clear(nodeType* p);
+	void minn(nodeType* x);
+public:
+	
+	void insert(int);
+	void inorderTraversal();
+	void preorderTraversal();
+	void postorderTraversal();
+	void clearTree();
+	bool search(int);
+	void remove(int);
+	void min();
+	void displayLevelOrder();
+	binarySearchTreeType();
+
+	
+};
+
+binarySearchTreeType::binarySearchTreeType() {
+	root = NULL;
+}
+
+void binarySearchTreeType::minn(nodeType* x) {
+	while (x->left != NULL)
+	{
+		root = root->left;
+	}
+
+}
+
+void binarySearchTreeType::min() {
+	minn(root);
+}
+
+void binarySearchTreeType::insert(int item) {
+	nodeType* current;
+	nodeType* trailCurrent=NULL;
+	nodeType* newNode;
+
+	newNode = new nodeType;
+	assert(newNode != NULL);
+	newNode->info = item;
+	newNode->left = NULL;
+	newNode->right = NULL;
+
+	if (root == NULL)
+
+		root = newNode;
+	else
+	{
+		current = root;
+
+		while (current != NULL)
+		{
+			trailCurrent = current;
+			if (current->info == item)
+			{
+				cout << "The insert item is in the list--";
+				cout << "duplicate are not allowed." << endl;
+			}
+			else
+				if (current->info > item)
+					current = current->left;
+				else
+					current = current->right;
+		}
+		if (trailCurrent->info > item)
+			trailCurrent->left = newNode;
+		else
+			trailCurrent->right = newNode;
+	}
+
+
+}
+
+bool binarySearchTreeType::search(int item)
+{
+	nodeType* current = root;
+	while (current != NULL)
+	{
+		if (current->info == item)
+			return true;
+		else if (current->info > item)
+			current = current->left;
+		else
+			current = current->right;
+	}
+
+	return false;
+
+}
+
+void binarySearchTreeType::deleteFromTree(nodeType*& p) {
+	nodeType* current;
+	nodeType* trailCurrent;
+	nodeType* temp;
+
+	if (p->left == NULL && p->right == NULL)
+	{
+		delete p;
+		p = NULL;
+	}
+	else if (p->left == NULL)
+	{
+		temp = p;
+		p = p->right;
+		delete temp;
+	}
+	else if (p->right == NULL)
+	{
+		temp = p;
+		p = p->left;
+		delete temp;
+
+	}
+
+	else
+	{
+		current = p->left;
+		trailCurrent = NULL;
+		while (current->right != NULL) {
+			trailCurrent = current;
+			current = current->right;
+		}
+		p->info = current->info;
+		if (trailCurrent == NULL)
+			p->left = current->left;
+		else
+			trailCurrent->right = current->left;
+
+		delete current;
+	}
+}
+
+void binarySearchTreeType::remove(int item)
+{
+	nodeType* current;
+	nodeType* trailCurrent;
+
+	if (root == NULL)
+	{
+		cout << " empty tree" << endl;
+		return;
+	}
+	if (root->info == item)
+	{
+		deleteFromTree(root);
+			return;
+	}
+
+	trailCurrent = root;
+
+	if (root->info > item)
+		current = root->left;
+	else
+		current = root->right;
+
+	while (current != NULL)
+	{
+		if (current->info == item)
+			break;
+		else
+		{
+			trailCurrent = current;
+			if (current->info > item)
+				current = current->left;
+			else
+				current = current->right;
+		}
+	}// once the while is done, current points to either NULL or to the node to be deleted
+
+	if (current == NULL)
+		cout << "The delete item is not in the tree." << endl;
+	else if (trailCurrent->info > item)
+		deleteFromTree(trailCurrent->left);
+	else
+		deleteFromTree(trailCurrent->right);
+}
+
+void binarySearchTreeType::inorder(nodeType* p) {
+	if (p != NULL) {
+		inorder(p->left);
+		cout << p->info << " ";
+		inorder(p->right);
+
+	}
+
+}
+
+void binarySearchTreeType::preorder(nodeType* p)
+{
+	if (p != NULL)
+	{
+		cout << p->info << " ";
+		preorder(p->left);
+		preorder(p->right);
+	}
+}
+
+void binarySearchTreeType::postorder(nodeType* p) {
+	if (p != NULL)
+	{
+		postorder(p->left);
+		postorder(p->right);
+		cout << p->info << " ";
+	}
+}
+
+
+void  binarySearchTreeType::clear(nodeType* p)
+{
+	if (p != NULL)
+	{
+		clear(p->left);
+		clear(p->right);
+		delete p;
+		p = NULL;
+	}
+}
+
+void  binarySearchTreeType::clearTree()
+{
+	clear(root);
+}
+void binarySearchTreeType::inorderTraversal() {
+	inorder(root);
+}
+
+void binarySearchTreeType::preorderTraversal() {
+	preorder(root);
+}
+
+void binarySearchTreeType::postorderTraversal() {
+	postorder(root);
+}
+
+void binarySearchTreeType::displayLevelOrder() {
+	if (root == NULL)
+		return;
+
+	queue<nodeType*>q;
+	q.push(root);
+
+	while (!q.empty())
+	{
+		nodeType* current = q.front();
+		q.pop();
+
+		cout << current->info << " ";
+		if (current->left != NULL) q.push(current->left);
+		if (current->right != NULL) q.push(current->right);
+	}
+
+
+}
+
+int main() {
+	binarySearchTreeType b;
+	b.insert(10);
+	b.insert(20);
+	b.insert(5);
+//	b.remove(10);
+	b.inorderTraversal();
+	cout << endl;
+	b.postorderTraversal();
+	cout << endl;
+	b.preorderTraversal();
+	cout << endl;
+	return 0;
+}
+
+/*
+search O(n)
+*/
+
+
