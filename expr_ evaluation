@@ -1,0 +1,57 @@
+#include<iostream>
+#include<stack>
+#include<string>
+using namespace std;
+
+float MathOperation(float op1, float op2, char operat)
+{
+	if (operat == '+')
+		return op1 + op2;
+	else if (operat == '-')
+		return op1 - op2;
+	else if (operat == '*')
+		return op1 * op2;
+	else if (operat == '/')
+		return op1 / op2;
+	else
+		return 0;
+}
+
+
+float postfix_evaluate(string exp)
+{
+	stack<float> stk;
+	for (int i = 0; i < exp.length(); i++)
+	{
+		if (isdigit(exp[i]))
+			stk.push(exp[i] - '0');//0=48\\1=49\ 2=50
+		else
+		{
+			float op2 = stk.top();
+			stk.pop();
+
+			float op1 = stk.top();
+			stk.pop();
+
+			float result = MathOperation(op1, op2, exp[i]);
+			stk.push(result);
+		}
+	}
+	return stk.top();
+}
+
+
+int main() {
+	string postfixExpression = "382/+5-";
+	cout << postfix_evaluate(postfixExpression) << endl;
+
+	system("pause");
+	return 0;
+}
+
+
+
+
+
+
+
