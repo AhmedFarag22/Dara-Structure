@@ -1,0 +1,211 @@
+#include<iostream>
+using namespace std;
+class doublyLinkedList {
+private:
+	struct node {
+		int item;
+		node* next;
+		node* prev;
+	};
+	node* first;
+	node* last;
+	int count;
+
+public:
+
+	doublyLinkedList() {
+		first = NULL;
+		last = NULL;
+		count = 0;
+	}
+
+	bool isEmpty() {
+		return (first == NULL);
+	}
+
+	void destroy()
+	{
+		node* temp;
+		while (first != NULL)
+		{
+			temp = first;
+			first = first->next;
+			delete temp;
+		}
+		last = NULL;
+		count = 0;
+	}
+
+	void insertFirst(int element) {
+		node* newNode = new node;
+		newNode->item = element;
+		if (count == 0) {
+			first = last = newNode;
+			newNode->next = newNode->prev = NULL;
+		}
+		else
+		{
+			newNode->next = first;
+			newNode->prev = NULL;
+			first->prev = newNode;
+			first = newNode;
+
+		}
+		count++;
+
+	}
+
+
+	void insertLast(int element) {
+		node* newNode = new node;
+		newNode->item = element;
+		if (count == 0) {
+			first = last = newNode;
+			newNode->next = newNode->prev = NULL;
+		}
+		else
+		{
+			newNode->next = NULL;
+			newNode->prev = last;
+			last->next = newNode;
+			last = newNode;
+
+		}
+
+		count++;
+	}
+
+	void insertAt(int pos, int item) {
+		if (pos<0 || pos>count)
+			cout << "out of range"<<endl;
+		else {
+			node* newNode = new node;
+			newNode->item = item;
+			if (pos == 0)
+				insertFirst(item);
+			else if (pos == count)
+				insertLast(item);
+			else {
+				node *curr = first;
+				for (size_t i = 1; i < pos; i++)
+				{
+					curr = curr->next;
+				}
+				newNode->next = curr->next;
+				newNode->prev = curr;
+				curr->next->prev = newNode;
+				curr->next = newNode;
+				count++;
+			}
+		}
+
+	}
+	void removeFirst() {
+		if (count == 0)
+			cout << "empty";
+		else if (count == 1) {
+			delete first;
+			last = first = NULL;
+		}
+		else {
+			node* curr = first;
+			first = first->next;
+			first->prev = NULL;
+			delete curr;
+		}
+		count--;
+	}
+
+	void removeLast() {
+		if (count == 0)
+			return;
+		else if (count == 1) {
+			delete first;
+			last = first = NULL;
+		}
+		else
+		{
+			node* curr = last;
+			last = last->prev;
+			last->next = NULL;
+			delete curr;
+			count--;
+		}
+	}
+
+	void remove(int item) {
+		if (count == 0)
+			return;
+		if (first->item == item)
+			removeFirst();
+		else {
+			node* curr = first->next;
+			while (curr != NULL)
+			{
+				if (curr->item == item)
+					break;
+				curr = curr->next;
+			}
+
+			if (curr == NULL)
+				return;
+			else if (curr->next == NULL)
+				removeLast();
+			else
+			{
+				curr->prev->next = curr->next;
+				curr->next->prev = curr->prev;
+				delete curr;
+				count--;
+			}
+
+		}
+	}
+
+	void display() {
+		cout << "Element List ..." << endl;
+		node* curr = first;
+		while (curr != NULL) {
+			cout << curr->item << "  ";
+			curr = curr->next;
+		}
+		cout << endl;
+
+	}
+
+	void reverseDisplay() {
+		cout << "Element List ..." << endl;
+		node* curr = last;
+		while (curr != NULL) {
+			cout << curr->item << "  ";
+			curr = curr->prev;
+		}
+		cout << endl;
+
+	}
+
+
+
+
+
+
+
+
+};
+
+
+int main() {
+
+	doublyLinkedList q;
+	q.insertAt(0, 10);
+	q.insertAt(1, 20);
+	q.insertAt(2, 30);
+	q.insertAt(3, 40);
+	q.display();
+	q.reverseDisplay();
+
+}
+
+//search O(n)
+//insert O(n)
+//delete O(n)
